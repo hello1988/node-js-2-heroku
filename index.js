@@ -19,7 +19,7 @@ app.get('/env', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 	result = {
 		a: 1,
-		k: process.env.TEST_KEY
+		env: process.env.TEST_KEY
 	}
     res.end(JSON.stringify(result));
 })
