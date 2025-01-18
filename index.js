@@ -15,9 +15,13 @@ app.get('/', (req, res) => {
 })
 
 app.get('/env', (req, res) => {
-	// console.log(process.env.TEST_KEY)
+	console.log(process.env.TEST_KEY)
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ a: 1 }));
+	result = {
+		a: 1,
+		k: process.env.TEST_KEY
+	}
+    res.end(JSON.stringify(result));
 })
 
 const server = app.listen(port, () => {
