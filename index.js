@@ -14,6 +14,12 @@ app.get('/', (req, res) => {
   res.render('pages/index')
 })
 
+app.get('/env', (req, res) => {
+	// console.log(process.env.TEST_KEY)
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ a: 1 }));
+})
+
 const server = app.listen(port, () => {
   console.log(`Listening on ${port}`)
 })
