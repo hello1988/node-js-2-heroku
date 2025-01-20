@@ -1,38 +1,32 @@
-const express = require('express')
-const path = require('path')
+const express = require('express');
+const path = require('path');
 
-const port = process.env.PORT || 5006
+const port = process.env.PORT || 5006;
+const app = express();
 
-const app = express()
+// 特定路徑返回 JSON
+app.get('/heroku.set', (req, res) => {
+  const config = {
+    url: process.env.APIURL || "https://testenv.com/",
+  };
+  res.json(config); // 返回 JSON 格式數據
+});
 
-app.use(express.static(path.join(__dirname, 'public')))
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
+// 提供靜態資源服務
+app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/', (req, res) => {
-  console.log(`Rendering 'pages/index' for route '/'`)
-  res.render('pages/index')
-})
 
-app.get('/env', (req, res) => {
-	console.log(process.env.TEST_KEY)
-    res.setHeader('Content-Type', 'application/json');
-	result = {
-		a: 1,
-		env: process.env.TEST_KEY
-	}
-    res.end(JSON.stringify(result));
-})
+// 捕獲沒有副檔名的路徑，返回 index.html
+app.get(/^\/(?!.*\.\w+$).*$/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
-const server = app.listen(port, () => {
-  console.log(`Listening on ${port}`)
-})
+// 捕獲未知路徑並返回 404
+app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
 
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM signal received: gracefully shutting down')
-  if (server) {
-    server.close(() => {
-      console.log('HTTP server closed')
-    })
-  }
-})
+// 啟動伺服器
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
